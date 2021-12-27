@@ -1,6 +1,8 @@
 package com.wt.adminvue.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wt.adminvue.dto.UserDto;
 import com.wt.adminvue.entity.Menu;
 import com.wt.adminvue.entity.Role;
 import com.wt.adminvue.entity.User;
@@ -98,5 +100,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         sysUsers.forEach(u -> {
             this.clearUserAuthorityInfo(u.getUsername());
         });
+    }
+
+    @Override
+    public Page<User> getList(UserDto dto) {
+        Page<User> page;
+        if (dto.getPageNo() > 0 && dto.getPageSize() > 0) {
+            page = new Page(dto.getPageNo(), dto.getPageSize());
+        } else {
+            page = new Page();
+        }
+        page=baseMapper.getList(page,dto.getUsername());
+        if (page!=null&&page.getRecords()!=null&&page.getRecords().size()>0){
+            page.getRecords().forEach(u -> {
+                u.setSysRoles(sysRoleService.listRolesByUserId(u.getId()));
+            });
+        }
+        return page;
     }
 }

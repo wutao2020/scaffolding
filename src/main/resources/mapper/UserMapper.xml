@@ -17,4 +17,10 @@
         WHERE
             rm.menu_id = #{menuId}
     </select>
+    <select id="getList" resultType="com.wt.adminvue.entity.User">
+        select *from sys_user where 1=1
+<if test="username!=null and username!=''">
+and username=#{username}
+</if>
+        </select>
 </mapper>

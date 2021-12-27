@@ -19,4 +19,7 @@ public interface IMenuService extends IService<Menu> {
     List<SysMenuModel> getCurrentUserNav();
 
     List<Menu> tree();
+
+
+    Integer deleteMenu(Long id);
 }

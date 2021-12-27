@@ -1,5 +1,7 @@
 package com.wt.adminvue.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wt.adminvue.dto.UserDto;
 import com.wt.adminvue.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,4 +22,6 @@ public interface IUserService extends IService<User> {
     void clearUserAuthorityInfoByRoleId(Long roleId);
 
     void clearUserAuthorityInfoByMenuId(Long menuId);
+
+    Page<User> getList(UserDto dto);
 }

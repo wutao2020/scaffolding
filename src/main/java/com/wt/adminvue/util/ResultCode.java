@@ -61,6 +61,7 @@ public enum ResultCode {
     NOT_USER(30004,"没有找到该用户"),
     EXPERT(30005,"该用户已经是专家"),
     NOT_PROBLEM(30006,"没有找到该问题"),
+    NOT_MENU_CHIN(3007,"请先删除子菜单"),
     MY_VALUE( 30000, "我的错误");
 
     private int code;

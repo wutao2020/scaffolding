@@ -5,12 +5,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wt.adminvue.entity.Menu;
 import com.wt.adminvue.entity.SysMenuModel;
+import com.wt.adminvue.exception.GuliException;
 import com.wt.adminvue.mapper.MenuMapper;
 import com.wt.adminvue.mapper.UserMapper;
 import com.wt.adminvue.service.IMenuService;
+import com.wt.adminvue.service.IUserService;
+import com.wt.adminvue.util.ResultCode;
+import com.wt.adminvue.util.ResultGenerator;
 import com.wt.adminvue.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +32,8 @@ import java.util.List;
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IMenuService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private IUserService userService;
     @Override
     public List<SysMenuModel> getCurrentUserNav() {
         Long userId = UserUtil.getLoginUser().getUserId();
@@ -48,6 +55,25 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
         // 转成树状结构
         return buildTreeMenu(sysMenus);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Integer deleteMenu(Long id) {
+
+        int count = baseMapper.selectCount(new QueryWrapper<Menu>().eq("parent_id", id));
+        if (count > 0) {
+            throw new GuliException(ResultCode.NOT_MENU_CHIN);
+        }
+
+        // 清除所有与该菜单相关的权限缓存
+        userService.clearUserAuthorityInfoByMenuId(id);
+
+        baseMapper.deleteById(id);
+
+        // 同步删除中间关联表
+        //new QueryWrapper<SysRoleMenu>().eq("menu_id", id)
+       return baseMapper.removeMenuRoleById(id);
     }
 
 

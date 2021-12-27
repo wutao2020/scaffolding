@@ -2,6 +2,7 @@ package com.wt.adminvue.mapper;
 
 import com.wt.adminvue.entity.Menu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface MenuMapper extends BaseMapper<Menu> {
 
+    Integer removeMenuRoleById(@Param("id") Long id);
 }

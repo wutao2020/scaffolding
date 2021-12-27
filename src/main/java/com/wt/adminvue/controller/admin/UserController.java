@@ -37,17 +37,12 @@ public class UserController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('sys:user:list')")
     public Result list(UserDto dto, Integer current, Integer size) {
-//
-//        Page<SysUser> pageData = sysUserService.page(getPage(), new QueryWrapper<SysUser>()
-//                .like(StrUtil.isNotBlank(username), "username", username));
-//
-//        pageData.getRecords().forEach(u -> {
-//
-//            u.setSysRoles(sysRoleService.listRolesByUserId(u.getId()));
-//        });
-        System.out.println("用户名："+dto.getUsername());
-        System.out.println("条数："+current);
-        System.out.println("页码："+size);
-        return ResultGenerator.genSuccessResult();
+        if (current != null) {
+            dto.setPageNo(current);
+        }
+        if (size != null) {
+            dto.setPageSize(size);
+        }
+        return ResultGenerator.genSuccessResult(service.getList(dto));
     }
 }
