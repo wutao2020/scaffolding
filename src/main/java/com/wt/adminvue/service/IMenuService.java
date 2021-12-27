@@ -2,6 +2,9 @@ package com.wt.adminvue.service;
 
 import com.wt.adminvue.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wt.adminvue.entity.SysMenuModel;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IMenuService extends IService<Menu> {
 
+    List<SysMenuModel> getCurrentUserNav();
+
+    List<Menu> tree();
 }

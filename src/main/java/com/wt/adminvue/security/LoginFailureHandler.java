@@ -24,10 +24,8 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         ServletOutputStream outputStream = response.getOutputStream();
         Result result = null;
         if (StrUtil.isEmpty(exception.getMessage())){
-            System.out.println(4444);
             result=ResultGenerator.error(ResultCode.LOGIN_MOBILE_ERROR);
         }else {
-            System.out.println(5555555);
           result=ResultGenerator.genFailResult(exception.getMessage());
         }
         System.out.println(result.toString());
