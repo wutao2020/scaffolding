@@ -1,18 +1,24 @@
 package com.wt.adminvue.controller.admin;
 
 
+import com.wt.adminvue.dto.PassDto;
+import com.wt.adminvue.dto.RolePermDto;
+import com.wt.adminvue.dto.SaveUserDto;
 import com.wt.adminvue.dto.UserDto;
+import com.wt.adminvue.entity.Role;
 import com.wt.adminvue.entity.User;
+import com.wt.adminvue.service.IRoleService;
 import com.wt.adminvue.service.IUserService;
-import com.wt.adminvue.util.Result;
-import com.wt.adminvue.util.ResultGenerator;
-import com.wt.adminvue.util.UserUtil;
+import com.wt.adminvue.util.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -27,6 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     private IUserService service;
+    @Autowired
+    private IRoleService roleService;
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
+
     @PostMapping("/userInfo")
     public Result<User> userInfo(){
         Long userId = UserUtil.getLoginUser().getUserId();
@@ -44,5 +55,94 @@ public class UserController {
             dto.setPageSize(size);
         }
         return ResultGenerator.genSuccessResult(service.getList(dto));
+    }
+
+    @GetMapping("/info/{id}")
+    @PreAuthorize("hasAuthority('sys:user:list')")
+    public Result info(@PathVariable("id") Long id) {
+        User sysUser = service.getById(id);
+        if (sysUser==null){
+            return ResultGenerator.genSuccessResult(ResultCode.NOT_USER);
+        }
+
+        List<Role> roles = roleService.listRolesByUserId(id);
+
+        sysUser.setSysRoles(roles);
+        return ResultGenerator.genSuccessResult(sysUser);
+    }
+    @PostMapping("/save")
+    @PreAuthorize("hasAuthority('sys:user:save')")
+    public Result save(@Validated @RequestBody SaveUserDto dto) {
+        User sysUser=new User();
+        BeanUtils.copyProperties(dto, sysUser);
+        sysUser.setCreated(LocalDateTime.now());
+        if (sysUser.getStatu()==null){
+            sysUser.setStatu(Const.STATUS_ON);
+        }
+
+        // 默认密码
+        String password = passwordEncoder.encode(Const.DEFULT_PASSWORD);
+        sysUser.setPassword(password);
+
+        // 默认头像
+        sysUser.setAvatar(Const.DEFULT_AVATAR);
+
+        service.save(sysUser);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/update")
+    @PreAuthorize("hasAuthority('sys:user:update')")
+    public Result update(@Validated @RequestBody SaveUserDto dto) {
+        User sysUser=new User();
+        BeanUtils.copyProperties(dto, sysUser);
+        sysUser.setUpdated(LocalDateTime.now());
+
+        service.updateById(sysUser);
+        return ResultGenerator.genSuccessResult();
+    }
+
+
+    @PostMapping("/delete")
+    @PreAuthorize("hasAuthority('sys:user:delete')")
+    public Result delete(@RequestBody List<Long> ids) {
+        return ResultGenerator.genSuccessResult(service.deleteUser(ids));
+    }
+
+
+    @PostMapping("/rolePerm")
+    @PreAuthorize("hasAuthority('sys:user:role')")
+    public Result rolePerm(@RequestBody RolePermDto dto) {
+        return ResultGenerator.genSuccessResult(service.rolePerm(dto));
+    }
+
+    @PostMapping("/repass")
+    @PreAuthorize("hasAuthority('sys:user:repass')")
+    public Result repass(@RequestBody Long userId) {
+
+        User sysUser = service.getById(userId);
+
+        sysUser.setPassword(passwordEncoder.encode(Const.DEFULT_PASSWORD));
+        sysUser.setUpdated(LocalDateTime.now());
+
+        service.updateById(sysUser);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/updatePass")
+    public Result updatePass(@Validated @RequestBody PassDto passDto) {
+        Long userId = UserUtil.getLoginUser().getUserId();
+        User sysUser = service.getById(userId);
+
+        boolean matches = passwordEncoder.matches(passDto.getCurrentPass(), sysUser.getPassword());
+        if (!matches) {
+            return ResultGenerator.genFailResult("旧密码不正确");
+        }
+
+        sysUser.setPassword(passwordEncoder.encode(passDto.getPassword()));
+        sysUser.setUpdated(LocalDateTime.now());
+
+        service.updateById(sysUser);
+        return ResultGenerator.genSuccessResult();
     }
 }

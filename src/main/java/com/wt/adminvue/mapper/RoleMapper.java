@@ -20,4 +20,12 @@ public interface RoleMapper extends BaseMapper<Role> {
     Page<Role> getList(Page<Role> page,@Param("name") String name);
 
     List<Long> getMenuIds(@Param("roleId") Long id);
+
+    Integer deleteUserRoleById(List<Long> ids);
+
+    Integer deleteRoleMenuById(List<Long> ids);
+
+    Integer removeMenuByRoleId(@Param("roleId") Long roleId);
+
+    Integer saveMenuRole(@Param("roleId")Long roleId, List<Long> list);
 }

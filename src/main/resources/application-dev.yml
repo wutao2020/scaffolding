@@ -59,6 +59,14 @@ spring:
   jackson:
         date-format: yyyy-MM-dd HH:mm:ss
         time-zone: GMT+8
+aliyun:
+  oss:
+    endpoint:
+      oss-cn-shenzhen.aliyuncs.com
+    keyid: LTAI4GE5NPf9LT31PhD955r3
+    keysecret: MAZCgN1aic0gznxrM9O5sXT9OlZQxi
+    #bucket可以在控制台创建，也可以使用java代码创建，注意先测试bucket是否已被占用
+    bucketname: wutao-file
 markerhub:
   jwt:
     header: Authorization

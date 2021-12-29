@@ -2,6 +2,8 @@ package com.wt.adminvue.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wt.adminvue.dto.RolePermDto;
 import com.wt.adminvue.dto.UserDto;
 import com.wt.adminvue.entity.Menu;
 import com.wt.adminvue.entity.Role;
@@ -10,10 +12,10 @@ import com.wt.adminvue.mapper.UserMapper;
 import com.wt.adminvue.service.IMenuService;
 import com.wt.adminvue.service.IRoleService;
 import com.wt.adminvue.service.IUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wt.adminvue.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -117,5 +119,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             });
         }
         return page;
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Integer deleteUser(List<Long> ids) {
+
+
+        baseMapper.removeUserRole(ids);
+        return baseMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Integer rolePerm(RolePermDto dto) {
+        baseMapper.removeRoleByUserId(dto.getUserId());
+
+
+        // 删除缓存
+        User sysUser = baseMapper.selectById(dto.getUserId());
+        clearUserAuthorityInfo(sysUser.getUsername());
+        return baseMapper.saveUserRole(dto.getUserId(),dto.getRoleIds());
     }
 }

@@ -1,7 +1,7 @@
 package com.wt.adminvue.controller.admin;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wt.adminvue.dto.PermDto;
 import com.wt.adminvue.dto.RoleDto;
 import com.wt.adminvue.dto.RolePageDto;
 import com.wt.adminvue.entity.Role;
@@ -18,8 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -64,7 +62,6 @@ public class RoleController {
         if (dto!=null&&dto.getStatu()==null){
             sysRole.setStatu(Const.STATUS_ON);
         }
-        service.save(sysRole);
         return ResultGenerator.genSuccessResult(service.save(sysRole));
     }
 
@@ -72,8 +69,8 @@ public class RoleController {
     @PreAuthorize("hasAuthority('sys:role:update')")
     public Result update(@Validated @RequestBody RoleDto dto) {
         Role sysRole=new Role();
+        BeanUtils.copyProperties(dto, sysRole);
         sysRole.setUpdated(LocalDateTime.now());
-
         service.updateById(sysRole);
 
         // 更新缓存
@@ -91,28 +88,10 @@ public class RoleController {
     }
 
     @Transactional
-    @PostMapping("/perm/{roleId}")
+    @PostMapping("/perm")
     @PreAuthorize("hasAuthority('sys:role:perm')")
-    public Result info(@PathVariable("roleId") Long roleId, @RequestBody Long[] menuIds) {
-
-        List<SysRoleMenu> sysRoleMenus = new ArrayList<>();
-
-        Arrays.stream(menuIds).forEach(menuId -> {
-            SysRoleMenu roleMenu = new SysRoleMenu();
-            roleMenu.setMenuId(menuId);
-            roleMenu.setRoleId(roleId);
-
-            sysRoleMenus.add(roleMenu);
-        });
-
-        // 先删除原来的记录，再保存新的
-        sysRoleMenuService.remove(new QueryWrapper<SysRoleMenu>().eq("role_id", roleId));
-        sysRoleMenuService.saveBatch(sysRoleMenus);
-
-        // 删除缓存
-        sysUserService.clearUserAuthorityInfoByRoleId(roleId);
-
-        return Result.succ(menuIds);
+    public Result perm(@RequestBody PermDto dto) {
+        return ResultGenerator.genSuccessResult(service.perm(dto));
     }
 
 

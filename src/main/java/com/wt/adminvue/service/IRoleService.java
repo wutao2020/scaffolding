@@ -1,6 +1,7 @@
 package com.wt.adminvue.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wt.adminvue.dto.PermDto;
 import com.wt.adminvue.dto.RolePageDto;
 import com.wt.adminvue.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -23,4 +24,6 @@ public interface IRoleService extends IService<Role> {
     Role getInfoById(Long id);
 
     Integer deleteRoleById(List<Long> ids);
+
+    Integer perm(PermDto dto);
 }

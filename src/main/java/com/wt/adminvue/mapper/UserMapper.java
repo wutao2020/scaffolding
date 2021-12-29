@@ -25,4 +25,10 @@ public interface UserMapper extends BaseMapper<User> {
 
     List<User> listByMenuId(@Param("menuId") Long menuId);
     Page<User> getList(Page<User> page, @Param("username") String username);
+
+    Integer removeUserRole(List<Long> ids);
+
+    Integer removeRoleByUserId(@Param("userId") Long userId);
+
+    Integer saveUserRole(@Param("userId") Long userId, List<Long> list);
 }

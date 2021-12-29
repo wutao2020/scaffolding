@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wt.adminvue.mapper.UserMapper">
+    <insert id="saveUserRole">
+        INSERT INTO `vueadmin`.`sys_user_role` (`user_id`, `role_id`) VALUES
+        <foreach collection="list" item="id" index="index" separator=",">
+            (#{userId},#{id})
+        </foreach>
+    </insert>
+    <delete id="removeUserRole">
+        delete from sys_user_role where user_id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="removeRoleByUserId">
+        delete from sys_user_role where user_id =#{userId}
+    </delete>
 
     <select id="getNavMenuIds" resultType="java.lang.Long">
         SELECT DISTINCT rm.menu_id FROM sys_user_role ur

@@ -3,6 +3,7 @@ package com.wt.adminvue.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wt.adminvue.dto.PermDto;
 import com.wt.adminvue.dto.RolePageDto;
 import com.wt.adminvue.entity.Role;
 import com.wt.adminvue.mapper.RoleMapper;
@@ -10,8 +11,8 @@ import com.wt.adminvue.service.IRoleService;
 import com.wt.adminvue.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -55,9 +56,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public Integer deleteRoleById(List<Long> ids) {
-        baseMapper.deleteBatchIds(ids);
-
         // 删除中间表
         baseMapper.deleteUserRoleById(ids);
         baseMapper.deleteRoleMenuById(ids);
@@ -66,5 +66,19 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             // 更新缓存
             userService.clearUserAuthorityInfoByRoleId(id);
         });
+        return baseMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Integer perm(PermDto dto) {
+
+        // 先删除原来的记录，再保存新的
+        baseMapper.removeMenuByRoleId(dto.getRoleId());
+
+
+        // 删除缓存
+        userService.clearUserAuthorityInfoByRoleId(dto.getRoleId());
+        return baseMapper.saveMenuRole(dto.getRoleId(),dto.getMenuIds());
     }
 }
