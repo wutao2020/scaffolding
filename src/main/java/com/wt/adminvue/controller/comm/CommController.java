@@ -46,6 +46,7 @@ public class CommController {
             @RequestParam(value = "fileType", required = true)
             @ApiParam("文件类型(1头像)")
                     Integer fileType) throws IOException {
+        System.out.println(fileType);
         FileModel model =new FileModel();
         if (fileType!=null&&fileType.intValue()==1){
             String path=fileService.upload(file, "headportrait");

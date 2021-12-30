@@ -1,6 +1,7 @@
 package com.wt.adminvue.controller.admin;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.wt.adminvue.dto.PassDto;
 import com.wt.adminvue.dto.RolePermDto;
 import com.wt.adminvue.dto.SaveUserDto;
@@ -84,8 +85,10 @@ public class UserController {
         String password = passwordEncoder.encode(Const.DEFULT_PASSWORD);
         sysUser.setPassword(password);
 
-        // 默认头像
-        sysUser.setAvatar(Const.DEFULT_AVATAR);
+        if (StrUtil.isEmpty(sysUser.getAvatar())){
+            // 默认头像
+            sysUser.setAvatar(Const.DEFULT_AVATAR);
+        }
 
         service.save(sysUser);
         return ResultGenerator.genSuccessResult();

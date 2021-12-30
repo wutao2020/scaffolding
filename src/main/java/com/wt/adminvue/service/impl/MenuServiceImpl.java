@@ -11,7 +11,6 @@ import com.wt.adminvue.mapper.UserMapper;
 import com.wt.adminvue.service.IMenuService;
 import com.wt.adminvue.service.IUserService;
 import com.wt.adminvue.util.ResultCode;
-import com.wt.adminvue.util.ResultGenerator;
 import com.wt.adminvue.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,6 +87,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             dto.setTitle(m.getName());
             dto.setComponent(m.getComponent());
             dto.setPath(m.getPath());
+            dto.setIcon(m.getIcon());
 
             if (m.getChildren().size() > 0) {
 
