@@ -14,9 +14,9 @@ public class FormUtils {
     /**
      * 手机号验证
      */
+    private static Pattern NUMBER_PATTERN = Pattern.compile("^[1][3,4,5,7,8,9][0-9]{9}$");
     public static boolean isMobile(String str) {
-        Pattern p = Pattern.compile("^[1][3,4,5,7,8,9][0-9]{9}$"); // 验证手机号
-        Matcher m = p.matcher(str);
+        Matcher m = NUMBER_PATTERN.matcher(str);
         return m.matches();
     }
 

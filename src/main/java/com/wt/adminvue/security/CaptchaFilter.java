@@ -1,7 +1,6 @@
 package com.wt.adminvue.security;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.wt.adminvue.exception.CaptchaException;
 import com.wt.adminvue.util.Const;
 import com.wt.adminvue.util.RedisUtil;
@@ -28,7 +27,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 		String url = httpServletRequest.getRequestURI();
-		if ("/login".equals(url) && httpServletRequest.getMethod().equals("POST")) {
+		if ("/login".equals(url) && "POST".equals(httpServletRequest.getMethod())) {
 			try{
 				// 校验验证码
 				validate(httpServletRequest);

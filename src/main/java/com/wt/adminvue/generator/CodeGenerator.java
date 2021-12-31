@@ -32,7 +32,7 @@ public class CodeGenerator {
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("160630");
+        dsc.setPassword("root");
         mpg.setDataSource(dsc);
 
         // 包配置
@@ -89,7 +89,7 @@ public class CodeGenerator {
         // strategy.setSuperControllerClass("你自己的父类控制器,没有就不用设置!");
         // 写于父类中的公共字段
         // strategy.setSuperEntityColumns("id");
-        strategy.setInclude("sys_menu");
+        strategy.setInclude("sys_logs");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix("sys_");
         mpg.setStrategy(strategy);
