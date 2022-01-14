@@ -78,7 +78,7 @@ public class Logs implements Serializable {
     @ApiModelProperty(value = "是否异常(1是，0否)")
     private Integer isAbnormal;
 
-    @ApiModelProperty(value = "日志来源(1管理端，2app)")
+    @ApiModelProperty(value = "日志来源(1管理端，0app)")
     private Integer isManage;
 
 

@@ -12,28 +12,34 @@ public class AccountUser implements UserDetails {
 
 	private String password;
 
-	private final String username;
+	private  String username;
 
-	private final Collection<? extends GrantedAuthority> authorities;
+	private  Collection<? extends GrantedAuthority> authorities;
 
-	private final boolean accountNonExpired;
+	private  boolean accountNonExpired;
 
-	private final boolean accountNonLocked;
+	private  boolean accountNonLocked;
 
-	private final boolean credentialsNonExpired;
+	private  boolean credentialsNonExpired;
 
-	private final boolean enabled;
+	private  boolean enabled;
+	/**
+	 * @description 是否是管理员（1是，0否）
+	 * @author 吴涛
+	 * @date 2022-01-11 15:07
+	 */
+	private Integer isAdmin;
 
-	public AccountUser(Long userId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
-		this(userId, username, password, true, true, true, true, authorities);
+	public AccountUser(Long userId, String username, String password,Integer isAdmin, Collection<? extends GrantedAuthority> authorities) {
+		this(userId, username, password, true, true, true, true,isAdmin, authorities);
 	}
 	public AccountUser(){
-		this(null, null, null, true, true, true, true,null);
+		this(null, null, null, true, true, true, true,0,null);
 	}
 
 
 	public AccountUser(Long userId, String username, String password, boolean enabled, boolean accountNonExpired,
-	            boolean credentialsNonExpired, boolean accountNonLocked,
+	            boolean credentialsNonExpired, boolean accountNonLocked,Integer isAdmin,
 	            Collection<? extends GrantedAuthority> authorities) {
 		Assert.isTrue(username != null && !"".equals(username) && password != null,
 				"Cannot pass null or empty values to constructor");
@@ -44,6 +50,7 @@ public class AccountUser implements UserDetails {
 		this.accountNonExpired = accountNonExpired;
 		this.credentialsNonExpired = credentialsNonExpired;
 		this.accountNonLocked = accountNonLocked;
+		this.isAdmin=isAdmin;
 		this.authorities = authorities;
 	}
 
@@ -87,7 +94,57 @@ public class AccountUser implements UserDetails {
 		return userId;
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
+
+	public void setAccountNonExpired(boolean accountNonExpired) {
+		this.accountNonExpired = accountNonExpired;
+	}
+
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+
+	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+		this.credentialsNonExpired = credentialsNonExpired;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public Integer getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Integer isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	@Override
+	public String toString() {
+		return "AccountUser{" +
+				"userId=" + userId +
+				", password='" + password + '\'' +
+				", username='" + username + '\'' +
+				", authorities=" + authorities +
+				", accountNonExpired=" + accountNonExpired +
+				", accountNonLocked=" + accountNonLocked +
+				", credentialsNonExpired=" + credentialsNonExpired +
+				", enabled=" + enabled +
+				'}';
 	}
 }

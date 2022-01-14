@@ -45,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager());
 		return jwtAuthenticationFilter;
 	}
-
 	@Bean
 	BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -57,12 +56,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			"/logout",
 			"/admin/auth/captcha",
 			"/favicon.ico",
-			"/common/**"
+			"/common/**",
+			"/v2/api-docs/**", "/swagger-resources/**", "/webjars/**", "/pages/**", "/druid/**","/app","/common/**","/*.html",
+			"/app/user/loginByPassword"
 
 	};
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
 		http.cors().and().csrf().disable()
 
 				// 登录配置
@@ -94,9 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				// 配置自定义的过滤器
 				.and()
 				.addFilter(jwtAuthenticationFilter())
-				.addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
-
-		;
+				
+				.addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
 
 	}
 

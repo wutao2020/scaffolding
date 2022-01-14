@@ -1,9 +1,9 @@
 package com.wt.adminvue.security;
 
 import cn.hutool.json.JSONUtil;
-import com.wt.adminvue.util.JwtUtils;
-import com.wt.adminvue.util.Result;
-import com.wt.adminvue.util.ResultGenerator;
+import com.wt.adminvue.util.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -21,7 +21,8 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
 
 	@Autowired
 	JwtUtils jwtUtils;
-
+	@Autowired
+	private RedisUtil redisUtil;
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -31,11 +32,19 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
 
 		response.setContentType("application/json;charset=UTF-8");
 		ServletOutputStream outputStream = response.getOutputStream();
+		String jwt = request.getHeader(jwtUtils.getHeader());
+		Claims claim = jwtUtils.getClaimByToken(jwt);
+		if (claim == null) {
+			throw new JwtException("token 异常");
+		}
+		if (jwtUtils.isTokenExpired(claim)) {
+			throw new JwtException("token已过期");
+		}
+		String username = claim.getSubject();
+		redisUtil.hdel(Const.ACCOUNTUSER, username);
 
 		response.setHeader(jwtUtils.getHeader(), "");
-
 		Result result = ResultGenerator.genSuccessResult();
-
 		outputStream.write(JSONUtil.toJsonStr(result).getBytes("UTF-8"));
 
 		outputStream.flush();

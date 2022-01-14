@@ -104,14 +104,8 @@ public class LogAdvice {
             String params = JSON.toJSONString(paramMap);
             operlog.setOperRequParam(params);// 请求参数
             operlog.setOperResParam(JSON.toJSONString(keys));// 返回结果
-            if (UserUtil.getLoginUser().getUserId()!=null){
-            	operlog.setIsManage(2);
-                operlog.setOperUserId(UserUtil.getLoginUser().getUserId()); // 请求用户ID
-            }
-//            else {
-//				operlog.setIsManage(1);
-//                operlog.setOperUserId(UserUtil.getLoginUser().getId()); // 请求用户ID
-//            }
+			operlog.setIsManage(UserUtil.getLoginUser().getIsAdmin());
+			operlog.setOperUserId(UserUtil.getLoginUser().getUserId()); // 请求用户ID
             operlog.setIsAbnormal(0);
             operlog.setOperUserName(UserUtil.getLoginUser().getUsername());// 请求用户名称
             operlog.setOperIp(IPUtils.getIpAddr(request));// 请求IP
@@ -170,14 +164,8 @@ public class LogAdvice {
             excepLog.setOperMethod(methodName);// 请求方法名
             excepLog.setExcName(e.getClass().getName());// 异常名称
             excepLog.setExcMessage(stackTraceToString(e.getClass().getName(),e.getMessage(),e.getStackTrace()));// 异常信息
-            if (UserUtil.getLoginUser().getUserId()!=null){
-            	excepLog.setIsManage(2);
-                excepLog.setOperUserId(UserUtil.getLoginUser().getUserId()); // 请求用户ID
-            }
-//            else {
-//				excepLog.setIsManage(1);
-//                excepLog.setOperUserId(UserUtil.getLoginUser().getId()); // 请求用户ID
-//            }
+			excepLog.setIsManage(UserUtil.getLoginUser().getIsAdmin());
+			excepLog.setOperUserId(UserUtil.getLoginUser().getUserId()); // 请求用户ID
 			excepLog.setIsAbnormal(1);
             excepLog.setOperUserName(UserUtil.getLoginUser().getUsername());// 请求用户名称
             excepLog.setOperUri(request.getRequestURI());// 操作URI

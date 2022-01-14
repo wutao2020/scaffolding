@@ -24,13 +24,13 @@ public class SwaggerConfig {
     public Docket api() {
         ParameterBuilder tokenPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<Parameter>();
-        tokenPar.name("token") .defaultValue("") .description("令牌")
+        tokenPar.name("Authorization") .defaultValue("") .description("令牌")
                 .modelRef(new ModelRef("string")).parameterType("header").required(false).build();
         pars.add(tokenPar.build());
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()  // 选择那些路径和api会生成document
-                .apis(RequestHandlerSelectors.basePackage("com.bf.nmxx")) // 对所有api进行监控
+                .apis(RequestHandlerSelectors.basePackage("com.wt.adminvue")) // 对所有api进行监控
                 .paths(PathSelectors.any()) // 对所有路径进行监控
                 .build()
                 .globalOperationParameters(pars)

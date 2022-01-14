@@ -14,7 +14,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+/**
+ * @description 图形码验证
+ * @author 吴涛
+ * @date 2022-01-11 11:03
+ */
 @Component
 public class CaptchaFilter extends OncePerRequestFilter {
 
@@ -42,18 +46,13 @@ public class CaptchaFilter extends OncePerRequestFilter {
 
 	// 校验验证码逻辑
 	private void validate(HttpServletRequest httpServletRequest) {
-		System.out.println("2222");
 		String code = httpServletRequest.getParameter("code");
 		String key = httpServletRequest.getParameter("randomCode");
 		if (StrUtil.isBlank(code) || StrUtil.isBlank(key)) {
-			System.out.println("111");
 			throw new CaptchaException(ResultCode.COOE_NULL.getMsg());
 		}
-		System.out.println("qqq:"+redisUtil.hget(Const.CAPTCHA_KEY,key));
-		System.out.println("code:"+code);
 		System.out.println(code.equals(redisUtil.hget(Const.CAPTCHA_KEY,key).toString()));
 		if (!code.equals(redisUtil.hget(Const.CAPTCHA_KEY, key).toString())) {
-			System.out.println("33333333");
 			throw new CaptchaException(ResultCode.CODE_ERROR.getMsg());
 		}
 		// 一次性使用

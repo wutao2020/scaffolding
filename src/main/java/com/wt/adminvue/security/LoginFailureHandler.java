@@ -16,6 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+/**
+ * @description 认证失败处理
+ * @author 吴涛
+ * @date 2022-01-11 11:01
+ */
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
