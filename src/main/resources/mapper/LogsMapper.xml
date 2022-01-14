@@ -2,4 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wt.adminvue.mapper.LogsMapper">
 
+    <select id="getLogsPage" resultType="com.wt.adminvue.entity.Logs">
+        select * from sys_logs where  1 = 1
+        <if test="operUserName != null and operUserName != ''">
+            and oper_user_name like concat('%', #{operUserName,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="startTime !=null ">
+            and create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime !=null">
+            AND create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="operType != null and operType != ''">
+            and oper_type like concat('%', #{operType,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="isAbnormal !=null and isAbnormal != '' and isAbnormal !=-1" >
+            and is_abnormal = #{isAbnormal}
+        </if>
+        <if test="isManage !=null and isManage != '' and isManage !=-1">
+            and is_manage = #{isManage}
+        </if>
+        order by create_time desc
+    </select>
 </mapper>

@@ -61,7 +61,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
 		String username = claim.getSubject();
 		// 获取用户的权限等信息
-//		User sysUser = sysUserService.getByUsername(username);
 		Object o = redisUtil.hget(Const.ACCOUNTUSER,username);
 		if (o!=null){
 			JSONObject jsonObject = JSONObject.parseObject(o.toString());

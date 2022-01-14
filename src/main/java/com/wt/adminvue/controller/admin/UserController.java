@@ -2,6 +2,7 @@ package com.wt.adminvue.controller.admin;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.wt.adminvue.annotation.LogAnnotation;
 import com.wt.adminvue.dto.PassDto;
 import com.wt.adminvue.dto.RolePermDto;
 import com.wt.adminvue.dto.SaveUserDto;
@@ -73,6 +74,7 @@ public class UserController {
     }
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('sys:user:save')")
+    @LogAnnotation(module = "管理员模块",operType = OprLogConst.ADD,operDesc = "管理员新增")
     public Result save(@Validated @RequestBody SaveUserDto dto) {
         User sysUser=new User();
         BeanUtils.copyProperties(dto, sysUser);
@@ -96,6 +98,7 @@ public class UserController {
 
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:user:update')")
+    @LogAnnotation(module = "管理员模块",operType = OprLogConst.UPDATE,operDesc = "管理员修改")
     public Result update(@Validated @RequestBody SaveUserDto dto) {
         User sysUser=new User();
         BeanUtils.copyProperties(dto, sysUser);
@@ -108,6 +111,7 @@ public class UserController {
 
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:user:delete')")
+    @LogAnnotation(module = "管理员模块",operType = OprLogConst.UPDATE,operDesc = "管理员删除")
     public Result delete(@RequestBody List<Long> ids) {
         return ResultGenerator.genSuccessResult(service.deleteUser(ids));
     }
@@ -115,12 +119,14 @@ public class UserController {
 
     @PostMapping("/rolePerm")
     @PreAuthorize("hasAuthority('sys:user:role')")
+    @LogAnnotation(module = "管理员模块",operType = OprLogConst.UPDATE,operDesc = "管理员分配角色")
     public Result rolePerm(@RequestBody RolePermDto dto) {
         return ResultGenerator.genSuccessResult(service.rolePerm(dto));
     }
 
     @PostMapping("/repass")
     @PreAuthorize("hasAuthority('sys:user:repass')")
+    @LogAnnotation(module = "管理员模块",operType = OprLogConst.UPDATE,operDesc = "管理员重置密码")
     public Result repass(@RequestBody Long userId) {
 
         User sysUser = service.getById(userId);
@@ -133,6 +139,7 @@ public class UserController {
     }
 
     @PostMapping("/updatePass")
+    @LogAnnotation(module = "管理员模块",operType = OprLogConst.UPDATE,operDesc = "管理员修改密码")
     public Result updatePass(@Validated @RequestBody PassDto passDto) {
         Long userId = UserUtil.getLoginUser().getUserId();
         User sysUser = service.getById(userId);

@@ -1,6 +1,7 @@
 package com.wt.adminvue.controller.admin;
 
 
+import com.wt.adminvue.annotation.LogAnnotation;
 import com.wt.adminvue.dto.PermDto;
 import com.wt.adminvue.dto.RoleDto;
 import com.wt.adminvue.dto.RolePageDto;
@@ -8,6 +9,7 @@ import com.wt.adminvue.entity.Role;
 import com.wt.adminvue.service.IRoleService;
 import com.wt.adminvue.service.IUserService;
 import com.wt.adminvue.util.Const;
+import com.wt.adminvue.util.OprLogConst;
 import com.wt.adminvue.util.Result;
 import com.wt.adminvue.util.ResultGenerator;
 import org.springframework.beans.BeanUtils;
@@ -54,6 +56,7 @@ public class RoleController {
         return ResultGenerator.genSuccessResult(sysRole);
     }
     @PostMapping("/save")
+    @LogAnnotation(module = "角色模块",operType = OprLogConst.ADD,operDesc = "角色保存")
     @PreAuthorize("hasAuthority('sys:role:save')")
     public Result save(@Validated @RequestBody RoleDto dto) {
         Role sysRole=new Role();
@@ -67,6 +70,7 @@ public class RoleController {
 
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:role:update')")
+    @LogAnnotation(module = "角色模块",operType = OprLogConst.UPDATE,operDesc = "角色修改")
     public Result update(@Validated @RequestBody RoleDto dto) {
         Role sysRole=new Role();
         BeanUtils.copyProperties(dto, sysRole);
@@ -82,6 +86,7 @@ public class RoleController {
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sys:role:delete')")
     @Transactional
+    @LogAnnotation(module = "角色模块",operType = OprLogConst.DELETE,operDesc = "角色删除")
     public Result deleteRoleById(@RequestBody List<Long> ids) {
 
         return ResultGenerator.genSuccessResult(service.deleteRoleById(ids));
@@ -90,6 +95,7 @@ public class RoleController {
     @Transactional
     @PostMapping("/perm")
     @PreAuthorize("hasAuthority('sys:role:perm')")
+    @LogAnnotation(module = "角色模块",operType = OprLogConst.UPDATE,operDesc = "角色分配权限")
     public Result perm(@RequestBody PermDto dto) {
         return ResultGenerator.genSuccessResult(service.perm(dto));
     }

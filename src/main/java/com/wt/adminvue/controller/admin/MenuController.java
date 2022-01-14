@@ -2,7 +2,7 @@ package com.wt.adminvue.controller.admin;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wt.adminvue.annotation.LogAnnotation;
 import com.wt.adminvue.dto.MenuDto;
 import com.wt.adminvue.entity.Menu;
 import com.wt.adminvue.entity.NavModel;
@@ -10,8 +10,8 @@ import com.wt.adminvue.entity.SysMenuModel;
 import com.wt.adminvue.security.AccountUser;
 import com.wt.adminvue.service.IMenuService;
 import com.wt.adminvue.service.IUserService;
+import com.wt.adminvue.util.OprLogConst;
 import com.wt.adminvue.util.Result;
-import com.wt.adminvue.util.ResultCode;
 import com.wt.adminvue.util.ResultGenerator;
 import com.wt.adminvue.util.UserUtil;
 import org.springframework.beans.BeanUtils;
@@ -70,6 +70,7 @@ public class MenuController {
         return ResultGenerator.genSuccessResult(menuService.getById(id));
     }
     @PostMapping("/save")
+    @LogAnnotation(module = "菜单模块",operType = OprLogConst.ADD,operDesc = "菜单保存")
     @PreAuthorize("hasAuthority('sys:menu:save')")
     public Result<Integer> save(@RequestBody MenuDto dto){
         Menu menu=new Menu();
@@ -80,6 +81,7 @@ public class MenuController {
     }
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:menu:update')")
+    @LogAnnotation(module = "菜单模块",operType = OprLogConst.UPDATE,operDesc = "菜单修改")
     public Result<Integer> update(@RequestBody MenuDto dto){
         Menu menu=new Menu();
         BeanUtils.copyProperties(dto, menu);
@@ -90,6 +92,7 @@ public class MenuController {
     }
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:menu:delete')")
+    @LogAnnotation(module = "菜单模块",operType = OprLogConst.DELETE,operDesc = "菜单删除")
     public Result delete(@PathVariable("id") Long id) {
         return ResultGenerator.genSuccessResult(menuService.deleteMenu(id));
     }
